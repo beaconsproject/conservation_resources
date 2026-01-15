@@ -1,0 +1,23 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "BEACONs Conservation Planning Resources"
+  navbar:
+    background: primary
+    right:
+      - href: index.qmd
+        text: Home
+      - text: "Data"
+        file: data.qmd
+      - text: "Methods"
+        file: methods.qmd
+      - text: "Tools"
+        file: tools.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true

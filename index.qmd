@@ -1,0 +1,13 @@
+# BEACONs Conservation Planning Resources
+
+Updated: 2026-01-15
+
+This site describes spatial datasets, analysis workflows, and tools (R packages, shiny apps, etc.) that the BEACONs project have found useful for conservation and landuse planning in Canada.
+
+All data, methods, and tools described in this website will be described in a tutorial format using a area of interest (AOI) that crosses the BC-Yukon border.
+
+Resources are organized into three groups:
+
+- [Data](data.qmd): This include all spatial datasets that we have found useful in conservation planning including hydrology, topography, environmental, and climate.
+- [Methods](methods.qmd): Methods include workflows and code to achieve specific objectives that we have used as part of spatial conservation planning.
+- [Tools](tools.qmd): This is a collection of specialized R packages, shiny apps, and other tools (e.g., circuitscape) that we have found useful, especially when there are not simple solutions that can be coded in R (or python)>

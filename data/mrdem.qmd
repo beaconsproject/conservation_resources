@@ -1,0 +1,74 @@
+---
+title: Medium resolution DEM - 30 meters
+author: Pierre vernier
+date: 2026-01-15
+---
+
+## Introduction
+
+Medium resolution digital elevation model - 30 meters (MRDEM-30)
+
+> Source: "https://radiantearth.github.io/stac-browser/#/external/datacube.services.geo.ca/stac/api/collections/mrdem-30"
+
+## Using QGIS
+
+See [tutorial prepared by Arnold](https://github.com/beaconsproject/beacons_processing_provider/blob/main/tutorial/mrdem_tutorial.md).
+
+## Using R
+
+Key points:
+
+- The /vsicurl/ prefix enables reading remote files via HTTP/HTTPS without downloading the entire file first
+- crop() trims to the bounding box, while mask = TRUE clips to the exact boundary shape
+- COGs work particularly well with this approach because they support partial reading, so only the necessary data is downloaded
+
+## Workflow
+
+In this workflow, we are going to download the national MRDEM and clip it to an area of interest (AOI).
+
+**Step 1** - Load libraries and read aoi boundary layer
+
+```{r}
+#| message: FALSE
+#| warning: FALSE
+library(sf)
+library(terra)
+bnd <- st_read("D:/caribou/data/little_rancheria_yt/caribou.gpkg", "aoi9999", quiet=TRUE) |>
+  st_transform(3979) # Canada Atlas Lambert to match mrdem
+bnd10 <- bnd |> st_buffer(10000) # buffer by 10-km
+```
+
+**Step 2** - Download 
+
+```{r}
+#| message: FALSE
+#| warning: FALSE
+cog <- "/vsicurl/https://canelevation-dem.s3.ca-central-1.amazonaws.com/mrdem-30/mrdem-30-dtm.tif"
+rcog <- rast(cog)
+plot(rcog)
+```
+
+**Step 3** - Crop mrdem to aoi
+
+```{r}
+#| message: FALSE
+#| warning: FALSE
+rc <- crop(rcog, st_bbox(bnd10), mask = FALSE) 
+```
+
+**Step 4** - View the results
+
+```{r}
+#| message: FALSE
+#| warning: FALSE
+plot(rc)
+plot(vect(bnd), lwd=3, add=TRUE)
+```
+
+**Step 5** - Save mrdem
+
+```{r}
+#| message: FALSE
+#| warning: FALSE
+writeRaster(rc, "tmp/mrdem.tif", overwrite = TRUE)
+```

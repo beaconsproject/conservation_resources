@@ -1,0 +1,114 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "BEACONs Conservation Planning Resources",
+    "section": "",
+    "text": "BEACONs Conservation Planning Resources\nUpdated: 2026-01-15\nThis site describes spatial datasets, analysis workflows, and tools (R packages, shiny apps, etc.) that the BEACONs project have found useful for conservation and landuse planning in Canada.\nAll data, methods, and tools described in this website will be described in a tutorial format using a area of interest (AOI) that crosses the BC-Yukon border.\nResources are organized into three groups:\n\nData: This include all spatial datasets that we have found useful in conservation planning including hydrology, topography, environmental, and climate.\nMethods: Methods include workflows and code to achieve specific objectives that we have used as part of spatial conservation planning.\nTools: This is a collection of specialized R packages, shiny apps, and other tools (e.g., circuitscape) that we have found useful, especially when there are not simple solutions that can be coded in R (or python)&gt;"
+  },
+  {
+    "objectID": "data.html",
+    "href": "data.html",
+    "title": "BEACONs Conservation Planning Resources",
+    "section": "",
+    "text": "Spatial datasets used by the BEACONs Project for conservation planning in the boreal.\nOnline datasets\n\nMedium resolution DEM (30m)\nLandcover 2010, 2015, 2020 (30m)\nNational hydro network (NHN)\n\nMultiple datasets (needs updating)\n\n[Intactness]https://github.com/beaconsproject/conservation_resources/blob/master/data/intactness/intactness.md)\nClimate NA\n\nEnvironmental surrogates (older descriptions - to be updated)\n\ncmi - Climate moisture index\ngpp - Gross primary productivity"
+  },
+  {
+    "objectID": "data.html#data",
+    "href": "data.html#data",
+    "title": "BEACONs Conservation Planning Resources",
+    "section": "",
+    "text": "Spatial datasets used by the BEACONs Project for conservation planning in the boreal.\nOnline datasets\n\nMedium resolution DEM (30m)\nLandcover 2010, 2015, 2020 (30m)\nNational hydro network (NHN)\n\nMultiple datasets (needs updating)\n\n[Intactness]https://github.com/beaconsproject/conservation_resources/blob/master/data/intactness/intactness.md)\nClimate NA\n\nEnvironmental surrogates (older descriptions - to be updated)\n\ncmi - Climate moisture index\ngpp - Gross primary productivity"
+  },
+  {
+    "objectID": "methods.html",
+    "href": "methods.html",
+    "title": "BEACONs Conservation Planning Resources",
+    "section": "",
+    "text": "SDMs/RSFs\n\nSpecies distribution models"
+  },
+  {
+    "objectID": "methods.html#methods",
+    "href": "methods.html#methods",
+    "title": "BEACONs Conservation Planning Resources",
+    "section": "",
+    "text": "SDMs/RSFs\n\nSpecies distribution models"
+  },
+  {
+    "objectID": "data/mrdem.html",
+    "href": "data/mrdem.html",
+    "title": "Medium resolution DEM - 30 meters",
+    "section": "",
+    "text": "Medium resolution digital elevation model - 30 meters (MRDEM-30)\n\nSource: “https://radiantearth.github.io/stac-browser/#/external/datacube.services.geo.ca/stac/api/collections/mrdem-30”"
+  },
+  {
+    "objectID": "data/mrdem.html#introduction",
+    "href": "data/mrdem.html#introduction",
+    "title": "Medium resolution DEM - 30 meters",
+    "section": "",
+    "text": "Medium resolution digital elevation model - 30 meters (MRDEM-30)\n\nSource: “https://radiantearth.github.io/stac-browser/#/external/datacube.services.geo.ca/stac/api/collections/mrdem-30”"
+  },
+  {
+    "objectID": "data/mrdem.html#using-qgis",
+    "href": "data/mrdem.html#using-qgis",
+    "title": "Medium resolution DEM - 30 meters",
+    "section": "Using QGIS",
+    "text": "Using QGIS\nSee tutorial prepared by Arnold."
+  },
+  {
+    "objectID": "data/mrdem.html#using-r",
+    "href": "data/mrdem.html#using-r",
+    "title": "Medium resolution DEM - 30 meters",
+    "section": "Using R",
+    "text": "Using R\nKey points:\n\nThe /vsicurl/ prefix enables reading remote files via HTTP/HTTPS without downloading the entire file first\ncrop() trims to the bounding box, while mask = TRUE clips to the exact boundary shape\nCOGs work particularly well with this approach because they support partial reading, so only the necessary data is downloaded"
+  },
+  {
+    "objectID": "data/mrdem.html#workflow",
+    "href": "data/mrdem.html#workflow",
+    "title": "Medium resolution DEM - 30 meters",
+    "section": "Workflow",
+    "text": "Workflow\nIn this workflow, we are going to download the national MRDEM and clip it to an area of interest (AOI).\nStep 1 - Load libraries and read aoi boundary layer\n\nlibrary(sf)\nlibrary(terra)\nbnd &lt;- st_read(\"D:/caribou/data/little_rancheria_yt/caribou.gpkg\", \"aoi9999\", quiet=TRUE) |&gt;\n  st_transform(3979) # Canada Atlas Lambert to match mrdem\nbnd10 &lt;- bnd |&gt; st_buffer(10000) # buffer by 10-km\n\nStep 2 - Download\n\ncog &lt;- \"/vsicurl/https://canelevation-dem.s3.ca-central-1.amazonaws.com/mrdem-30/mrdem-30-dtm.tif\"\nrcog &lt;- rast(cog)\nplot(rcog)\n\n\n\n\n\n\n\n\nStep 3 - Crop mrdem to aoi\n\nrc &lt;- crop(rcog, st_bbox(bnd10), mask = FALSE) \n\nStep 4 - View the results\n\nplot(rc)\nplot(vect(bnd), lwd=3, add=TRUE)\n\n\n\n\n\n\n\n\nStep 5 - Save mrdem\n\nwriteRaster(rc, \"tmp/mrdem.tif\", overwrite = TRUE)"
+  },
+  {
+    "objectID": "data/nhn.html",
+    "href": "data/nhn.html",
+    "title": "National hydro network",
+    "section": "",
+    "text": "From the website: The National Hydro Network (NHN) focuses on providing a quality geometric description and a set of basic attributes describing Canada’s inland surface waters. It provides geospatial digital data compliant with the NHN Standard such as lakes, reservoirs, watercourses (rivers and streams), canals, islands, drainage linear network, toponyms or geographical names, constructions and obstacles related to surface waters, etc. The best available federal and provincial data are used for its production, which is done jointly by the federal and interested provincial and territorial partners. The NHN is created from existing data at the 1:50 000 scale or better. The NHN data have a great potential for analysis, cartographic representation and display and will serve as base data in many applications. The NHN Work Unit Limits were created based on Water Survey of Canada Sub-Sub-Drainage Area.\n\nGo to website\nFTP downloads"
+  },
+  {
+    "objectID": "data/nhn.html#description",
+    "href": "data/nhn.html#description",
+    "title": "National hydro network",
+    "section": "",
+    "text": "From the website: The National Hydro Network (NHN) focuses on providing a quality geometric description and a set of basic attributes describing Canada’s inland surface waters. It provides geospatial digital data compliant with the NHN Standard such as lakes, reservoirs, watercourses (rivers and streams), canals, islands, drainage linear network, toponyms or geographical names, constructions and obstacles related to surface waters, etc. The best available federal and provincial data are used for its production, which is done jointly by the federal and interested provincial and territorial partners. The NHN is created from existing data at the 1:50 000 scale or better. The NHN data have a great potential for analysis, cartographic representation and display and will serve as base data in many applications. The NHN Work Unit Limits were created based on Water Survey of Canada Sub-Sub-Drainage Area.\n\nGo to website\nFTP downloads"
+  },
+  {
+    "objectID": "data/nhn.html#using-r-to-download-data",
+    "href": "data/nhn.html#using-r-to-download-data",
+    "title": "National hydro network",
+    "section": "Using R to download data",
+    "text": "Using R to download data\n\nlibrary(sf)\nlibrary(httr)\nlibrary(tmap)\n\naoi &lt;- st_read(\"D:/caribou/data/little_rancheria_yt/caribou.gpkg\", \"aoi9999\", quiet=TRUE)\n\n# Select FDA and output file\nnhn_code &lt;- tolower(\"10AC0X2\") # DATASETNAM\nnhnOut &lt;- paste0(\"tmp/nhn_\",nhn_code,\"_hydro.gpkg\")\n\n# Attributes of interest\nboundary &lt;- \"NHN_WORKUNIT_LIMIT_2\"\nwater_poly &lt;- \"NHN_HD_WATERBODY_2\"\nwater_line &lt;- \"NHN_HD_SLWATER_1\"\nwater_line_all &lt;- \"NHN_HN_NLFOW_1\" # includes lines thru polygons\n\n# Download and extract\nurl &lt;- paste0(\"http://ftp.maps.canada.ca/pub/nrcan_rncan/vector/geobase_nhn_rhn/gdb_en/\", substring(nhn_code,1,2),\"/nhn_rhn_\",nhn_code,\"_gdb_en.zip\")\ndestfile &lt;- paste0(\"tmp/nhn_rhn_\",nhn_code,\"_gdb_en.zip\")\nextract_dir &lt;- \"tmp\"\nGET(url, write_disk(destfile, overwrite = TRUE), config(ssl_verifypeer = FALSE)) #, progress())\n\nResponse [https://ftp.maps.canada.ca/pub/nrcan_rncan/vector/geobase_nhn_rhn/gdb_en/10/nhn_rhn_10ac0x2_gdb_en.zip]\n  Date: 2026-01-15 21:15\n  Status: 200\n  Content-Type: application/zip\n  Size: 10.5 MB\n&lt;ON DISK&gt;  D:\\github\\beaconsproject\\conservation_resources\\data\\tmp\\nhn_rhn_10ac0x2_gdb_en.zip\n\nunzip(destfile, exdir = extract_dir)\n#file.remove(paste0(\"tmp/nhn_\",i,\".zip\"))\n\n# Select gdb - filenames vary so search for \".gdb\" pattern\nnhn &lt;- paste0(\"tmp/nhn_rhn_\",nhn_code,\".gdb\")\n\n# Boundary\nbnd &lt;- st_read(nhn, boundary, quiet=TRUE) |&gt;\n  st_zm()\n\n# Lakes and rivers\nlakes &lt;- read_sf(nhn, water_poly, quiet=TRUE) |&gt;\n  st_zm()\n\n# Streams\nstreams &lt;- read_sf(nhn, water_line) |&gt;\n    st_zm()\n\ntm_shape(bnd) + \n  tm_borders(col=\"black\", lwd=2) +\n  tm_shape(lakes) +\n  tm_polygons(col=\"blue\") +\n  tm_shape(streams) +\n  tm_lines(col=\"blue\") +\n  tm_basemap(\"Esri.WorldTopoMap\")"
+  },
+  {
+    "objectID": "data/landcover.html",
+    "href": "data/landcover.html",
+    "title": "Land Cover of Canada",
+    "section": "",
+    "text": "From the website: Land cover information is necessary for a large range of environmental applications related to climate impacts and adaption, emergency response, wildlife habitat, etc. The Canada Centre for Remote Sensing (CCRS) has generated a 30 m land cover map of Canada in response to this need. This land cover dataset is also the Canadian contribution to the 30 m spatial resolution Land Cover Map of North America under a collaboration called the North American Land Change Monitoring System (NALCMS). This land cover dataset for Canada is produced using observation from Operational Land Imager (OLI) Landsat sensor.\n\nGo to website"
+  },
+  {
+    "objectID": "data/landcover.html#description",
+    "href": "data/landcover.html#description",
+    "title": "Land Cover of Canada",
+    "section": "",
+    "text": "From the website: Land cover information is necessary for a large range of environmental applications related to climate impacts and adaption, emergency response, wildlife habitat, etc. The Canada Centre for Remote Sensing (CCRS) has generated a 30 m land cover map of Canada in response to this need. This land cover dataset is also the Canadian contribution to the 30 m spatial resolution Land Cover Map of North America under a collaboration called the North American Land Change Monitoring System (NALCMS). This land cover dataset for Canada is produced using observation from Operational Land Imager (OLI) Landsat sensor.\n\nGo to website"
+  },
+  {
+    "objectID": "data/landcover.html#using-r-to-get-the-data",
+    "href": "data/landcover.html#using-r-to-get-the-data",
+    "title": "Land Cover of Canada",
+    "section": "Using R to get the data",
+    "text": "Using R to get the data\n\nSelect area of interest\nWe will use an area of interest (AOI) that spans the BC-Yukon border.\n\nlibrary(sf)\nlibrary(tmap)\nlibrary(terra)\nbnd &lt;- st_read(\"D:/caribou/data/little_rancheria_yt/caribou.gpkg\", \"aoi9999\", quiet=TRUE)\nbnd3578 &lt;- bnd |&gt; st_transform(3578) # Yukon Albers\nbnd3979 &lt;- bnd |&gt; st_transform(3979) |&gt; # Canada Atlas Lambert\n  st_buffer(5000)\ntm_shape(bnd3578) + \n  tm_borders(col=\"black\", lwd=3, lty=\"dashed\") +\n  tm_basemap(\"Esri.WorldTopoMap\")\n\n\n\n\n\n\n\n\n\n\nDownload, crop, and save\nNow that we have an AOI object, we can download, crop, and save the landcover data. We will do this for all three available maps: 2010, 2015, and 2020. This step only needs to be performed once, which is why we have placed the code within an if statement. If download is set to 1, the code will be run.\n\ndownload &lt;- 0 # 1 = download, 0 = do not download\nif (download==1) {\n\n  # Dowload data\n  lc2010 &lt;- \"/vsicurl/https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/land/landcover/landcover-2010-classification.tif\"\n  lc2015 &lt;- \"/vsicurl/https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/land/landcover/landcover-2015-classification.tif\"\n  lc2020 &lt;- \"/vsicurl/https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/land/landcover/landcover-2020-classification.tif\"\n  r2010 &lt;- rast(lc2010)\n  r2015 &lt;- rast(lc2015)\n  r2020 &lt;- rast(lc2020)\n\n  # Crop rasters\n  rc2010 &lt;- crop(r2010, st_bbox(bnd3979), mask = FALSE) |&gt; \n    as.factor() |&gt; # necessary to save color table and ensure proper projection\n    project(\"EPSG:3578\") # default: nearest-neighbour\n\n  rc2015 &lt;- crop(r2015, st_bbox(bnd3979), mask = FALSE) |&gt; \n    as.factor() |&gt; # necessary to save color table and ensure proper projection\n    project(\"EPSG:3578\") # default: nearest-neighbour\n\n  rc2020 &lt;- crop(r2020, st_bbox(bnd3979), mask = FALSE) |&gt; \n    as.factor() |&gt; # necessary to save color table and ensure proper projection\n    project(\"EPSG:3578\") # default: nearest-neighbour\n\n  # Save rasters\n  writeRaster(rc2010, \"tmp/lcc2010.tif\", overwrite = TRUE)\n  writeRaster(rc2015, \"tmp/lcc2015.tif\", overwrite = TRUE)\n  writeRaster(rc2020, \"tmp/lcc2020.tif\", overwrite = TRUE)\n}\n\n\n\nPlot the results\nFinally, we can check the results with a simple plot of the three landcover maps for our AOI&gt;\n\nif (download==0) {\n  rc2010 &lt;- rast(\"tmp/lcc2010.tif\")\n  rc2015 &lt;- rast(\"tmp/lcc2015.tif\")\n  rc2020 &lt;- rast(\"tmp/lcc2020.tif\")\n}\n\nrc &lt;- c(rc2010, rc2015, rc2020)\n\n# View the results\ntm_shape(rc) +\n  tm_raster() +\n  tm_legend_hide() +\n  tm_shape(bnd3578) + \n  tm_borders(col=\"white\", lwd=3, lty=\"dashed\")"
+  }
+]

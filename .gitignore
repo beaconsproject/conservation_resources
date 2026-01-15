@@ -1,0 +1,3 @@
+data/tmp
+/.quarto/
+**/*.quarto_ipynb

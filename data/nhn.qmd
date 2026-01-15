@@ -1,0 +1,66 @@
+---
+title: National hydro network
+author: Pierre vernier
+date: 2026-01-09
+---
+
+## Description
+
+*From the website*: The National Hydro Network (NHN) focuses on providing a quality geometric description and a set of basic attributes describing Canada's inland surface waters. It provides geospatial digital data compliant with the NHN Standard such as lakes, reservoirs, watercourses (rivers and streams), canals, islands, drainage linear network, toponyms or geographical names, constructions and obstacles related to surface waters, etc. The best available federal and provincial data are used for its production, which is done jointly by the federal and interested provincial and territorial partners. The NHN is created from existing data at the 1:50 000 scale or better. The NHN data have a great potential for analysis, cartographic representation and display and will serve as base data in many applications. The NHN Work Unit Limits were created based on Water Survey of Canada Sub-Sub-Drainage Area.
+
+- [Go to website](https://radiantearth.github.io/stac-browser/#/external/datacube.services.geo.ca/stac/api/collections/landcover)
+- [FTP downloads](https://ftp.maps.canada.ca/pub/nrcan_rncan/vector/geobase_nhn_rhn/gdb_en/)
+
+## Using R to download data
+
+```{r}
+#| message: FALSE
+#| warning: FALSE
+library(sf)
+library(httr)
+library(tmap)
+
+aoi <- st_read("D:/caribou/data/little_rancheria_yt/caribou.gpkg", "aoi9999", quiet=TRUE)
+
+# Select FDA and output file
+nhn_code <- tolower("10AC0X2") # DATASETNAM
+nhnOut <- paste0("tmp/nhn_",nhn_code,"_hydro.gpkg")
+
+# Attributes of interest
+boundary <- "NHN_WORKUNIT_LIMIT_2"
+water_poly <- "NHN_HD_WATERBODY_2"
+water_line <- "NHN_HD_SLWATER_1"
+water_line_all <- "NHN_HN_NLFOW_1" # includes lines thru polygons
+
+# Download and extract
+url <- paste0("http://ftp.maps.canada.ca/pub/nrcan_rncan/vector/geobase_nhn_rhn/gdb_en/", substring(nhn_code,1,2),"/nhn_rhn_",nhn_code,"_gdb_en.zip")
+destfile <- paste0("tmp/nhn_rhn_",nhn_code,"_gdb_en.zip")
+extract_dir <- "tmp"
+GET(url, write_disk(destfile, overwrite = TRUE), config(ssl_verifypeer = FALSE)) #, progress())
+unzip(destfile, exdir = extract_dir)
+#file.remove(paste0("tmp/nhn_",i,".zip"))
+
+# Select gdb - filenames vary so search for ".gdb" pattern
+nhn <- paste0("tmp/nhn_rhn_",nhn_code,".gdb")
+
+# Boundary
+bnd <- st_read(nhn, boundary, quiet=TRUE) |>
+  st_zm()
+
+# Lakes and rivers
+lakes <- read_sf(nhn, water_poly, quiet=TRUE) |>
+  st_zm()
+
+# Streams
+streams <- read_sf(nhn, water_line) |>
+    st_zm()
+
+tm_shape(bnd) + 
+  tm_borders(col="black", lwd=2) +
+  tm_shape(lakes) +
+  tm_polygons(col="blue") +
+  tm_shape(streams) +
+  tm_lines(col="blue") +
+  tm_basemap("Esri.WorldTopoMap")
+
+```

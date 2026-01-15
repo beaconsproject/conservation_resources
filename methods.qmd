@@ -1,0 +1,5 @@
+## Methods
+
+**SDMs/RSFs**
+
+* [Species distribution models](https://beaconsproject.github.io/coding/stats/occurrence.html)

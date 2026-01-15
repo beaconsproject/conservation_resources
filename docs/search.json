@@ -9,9 +9,9 @@
   {
     "objectID": "data.html",
     "href": "data.html",
-    "title": "BEACONs Conservation Planning Resources",
+    "title": "Data",
     "section": "",
-    "text": "Spatial datasets used by the BEACONs Project for conservation planning in the boreal.\nOnline datasets\n\nMedium resolution DEM (30m)\nLandcover 2010, 2015, 2020 (30m)\nNational hydro network (NHN)\n\nMultiple datasets (needs updating)\n\n[Intactness]https://github.com/beaconsproject/conservation_resources/blob/master/data/intactness/intactness.md)\nClimate NA\n\nEnvironmental surrogates (older descriptions - to be updated)\n\ncmi - Climate moisture index\ngpp - Gross primary productivity"
+    "text": "Spatial datasets used by the BEACONs Project for conservation planning in the boreal.\n\n\nHydrology\n\nNational hydro network (NHN)\n\nTopography\n\nMedium resolution DEM (30m)\n\nLandcover\n\nLandcover 2010, 2015, 2020 (30m)\n\n\n\n\n\nClimate NA\nIntactness\nClimate moisture index\nGross primary productivity"
   },
   {
     "objectID": "data.html#data",
@@ -25,14 +25,14 @@
     "href": "methods.html",
     "title": "BEACONs Conservation Planning Resources",
     "section": "",
-    "text": "SDMs/RSFs\n\nSpecies distribution models"
+    "text": "SDMs/RSFs\n\nSpecies distribution models (needs to be rendered locally)"
   },
   {
     "objectID": "methods.html#methods",
     "href": "methods.html#methods",
     "title": "BEACONs Conservation Planning Resources",
     "section": "",
-    "text": "SDMs/RSFs\n\nSpecies distribution models"
+    "text": "SDMs/RSFs\n\nSpecies distribution models (needs to be rendered locally)"
   },
   {
     "objectID": "data/mrdem.html",
@@ -110,5 +110,19 @@
     "title": "Land Cover of Canada",
     "section": "Using R to get the data",
     "text": "Using R to get the data\n\nSelect area of interest\nWe will use an area of interest (AOI) that spans the BC-Yukon border.\n\nlibrary(sf)\nlibrary(tmap)\nlibrary(terra)\nbnd &lt;- st_read(\"D:/caribou/data/little_rancheria_yt/caribou.gpkg\", \"aoi9999\", quiet=TRUE)\nbnd3578 &lt;- bnd |&gt; st_transform(3578) # Yukon Albers\nbnd3979 &lt;- bnd |&gt; st_transform(3979) |&gt; # Canada Atlas Lambert\n  st_buffer(5000)\ntm_shape(bnd3578) + \n  tm_borders(col=\"black\", lwd=3, lty=\"dashed\") +\n  tm_basemap(\"Esri.WorldTopoMap\")\n\n\n\n\n\n\n\n\n\n\nDownload, crop, and save\nNow that we have an AOI object, we can download, crop, and save the landcover data. We will do this for all three available maps: 2010, 2015, and 2020. This step only needs to be performed once, which is why we have placed the code within an if statement. If download is set to 1, the code will be run.\n\ndownload &lt;- 0 # 1 = download, 0 = do not download\nif (download==1) {\n\n  # Dowload data\n  lc2010 &lt;- \"/vsicurl/https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/land/landcover/landcover-2010-classification.tif\"\n  lc2015 &lt;- \"/vsicurl/https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/land/landcover/landcover-2015-classification.tif\"\n  lc2020 &lt;- \"/vsicurl/https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/land/landcover/landcover-2020-classification.tif\"\n  r2010 &lt;- rast(lc2010)\n  r2015 &lt;- rast(lc2015)\n  r2020 &lt;- rast(lc2020)\n\n  # Crop rasters\n  rc2010 &lt;- crop(r2010, st_bbox(bnd3979), mask = FALSE) |&gt; \n    as.factor() |&gt; # necessary to save color table and ensure proper projection\n    project(\"EPSG:3578\") # default: nearest-neighbour\n\n  rc2015 &lt;- crop(r2015, st_bbox(bnd3979), mask = FALSE) |&gt; \n    as.factor() |&gt; # necessary to save color table and ensure proper projection\n    project(\"EPSG:3578\") # default: nearest-neighbour\n\n  rc2020 &lt;- crop(r2020, st_bbox(bnd3979), mask = FALSE) |&gt; \n    as.factor() |&gt; # necessary to save color table and ensure proper projection\n    project(\"EPSG:3578\") # default: nearest-neighbour\n\n  # Save rasters\n  writeRaster(rc2010, \"tmp/lcc2010.tif\", overwrite = TRUE)\n  writeRaster(rc2015, \"tmp/lcc2015.tif\", overwrite = TRUE)\n  writeRaster(rc2020, \"tmp/lcc2020.tif\", overwrite = TRUE)\n}\n\n\n\nPlot the results\nFinally, we can check the results with a simple plot of the three landcover maps for our AOI&gt;\n\nif (download==0) {\n  rc2010 &lt;- rast(\"tmp/lcc2010.tif\")\n  rc2015 &lt;- rast(\"tmp/lcc2015.tif\")\n  rc2020 &lt;- rast(\"tmp/lcc2020.tif\")\n}\n\nrc &lt;- c(rc2010, rc2015, rc2020)\n\n# View the results\ntm_shape(rc) +\n  tm_raster() +\n  tm_legend_hide() +\n  tm_shape(bnd3578) + \n  tm_borders(col=\"white\", lwd=3, lty=\"dashed\")"
+  },
+  {
+    "objectID": "data.html#current",
+    "href": "data.html#current",
+    "title": "Data",
+    "section": "",
+    "text": "Hydrology\n\nNational hydro network (NHN)\n\nTopography\n\nMedium resolution DEM (30m)\n\nLandcover\n\nLandcover 2010, 2015, 2020 (30m)"
+  },
+  {
+    "objectID": "data.html#to-be-updated-and-organized",
+    "href": "data.html#to-be-updated-and-organized",
+    "title": "Data",
+    "section": "",
+    "text": "Climate NA\nIntactness\nClimate moisture index\nGross primary productivity"
   }
 ]

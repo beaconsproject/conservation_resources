@@ -2,4 +2,4 @@
 
 **SDMs/RSFs**
 
-* [Species distribution models](https://beaconsproject.github.io/coding/stats/occurrence.html)
+* [Species distribution models (needs to be rendered locally)](https://beaconsproject.github.io/coding/stats/occurrence.html)

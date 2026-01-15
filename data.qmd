@@ -1,20 +1,25 @@
-## Data
+# Data
 
 Spatial datasets used by the BEACONs Project for conservation planning in the boreal.
 
-**Online datasets**
+## Current
 
-* [Medium resolution DEM (30m)](data/mrdem.qmd)
-* [Landcover 2010, 2015, 2020 (30m)](data/landcover.qmd)
-* [National hydro network (NHN)](data/nhn.qmd)
+**Hydrology**
 
-**Multiple datasets (needs updating)**
+- [National hydro network (NHN)](data/nhn.qmd)
 
-  - [Intactness]https://github.com/beaconsproject/conservation_resources/blob/master/data/intactness/intactness.md)
-  - [Climate NA](https://github.com/beaconsproject/conservation_resources/blob/master/data/climateNA/cmi.md)
+**Topography**
 
-**Environmental surrogates** (older descriptions - to be updated)
+- [Medium resolution DEM (30m)](data/mrdem.qmd)
 
-  - `cmi` - [Climate moisture index](https://github.com/beaconsproject/conservation_resources/blob/master/data/cmi.md)
-  - `gpp` - [Gross primary productivity](https://github.com/beaconsproject/conservation_resources/blob/master/data/gpp.md)
+**Landcover**
+
+- [Landcover 2010, 2015, 2020 (30m)](data/landcover.qmd)
+
+## To be updated and organized
+
+- [Climate NA](https://github.com/beaconsproject/conservation_resources/blob/master/data/climateNA/cmi.md)
+- [Intactness](https://github.com/beaconsproject/conservation_resources/blob/master/data/intactness/intactness.md)
+- [Climate moisture index](https://github.com/beaconsproject/conservation_resources/blob/master/data/cmi.md)
+- [Gross primary productivity](https://github.com/beaconsproject/conservation_resources/blob/master/data/gpp.md)
 

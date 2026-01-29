@@ -1,0 +1,43 @@
+---
+title: Gross primary connectivity
+author: Pierre vernier
+date: 2026-01-29
+---
+
+## Description
+
+- [View dataset description](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_COMPOSITES_C02_T1_L2_ANNUAL_NDVI)
+
+
+## Downloading data from GEE
+
+```{.javascript}
+// Area of interest
+var aoi = ee.FeatureCollection('projects/ee-vernier/assets/caribou_aoi').geometry();
+
+var dataset = ee.ImageCollection('LANDSAT/COMPOSITES/C02/T1_L2_ANNUAL_NDVI')
+                  .filterDate('2020-01-01', '2025-12-31');
+var ndvi = dataset.select('NDVI').mosaic().clip(aoi);
+var ndviVis = {
+  min: 0,
+  max: 1,
+  palette: [
+    'ffffff', 'ce7e45', 'df923d', 'f1b555', 'fcd163', '99b718', '74a901',
+    '66a000', '529400', '3e8601', '207401', '056201', '004c00', '023b01',
+    '012e01', '011d01', '011301'
+  ],
+};
+
+Map.centerObject(aoi, 8);
+Map.addLayer(ndvi, ndviVis, 'NDVI');
+
+Export.image.toDrive({
+  image: ndvi,
+  folder: 'gee_data',
+  description: 'ndvi_2020-25',
+  maxPixels: 1e13,
+  crs: 'EPSG:3578',
+  scale: 100,
+  region: aoi
+});
+```

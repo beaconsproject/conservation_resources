@@ -1,8 +1,8 @@
-# Data
+# Spatial datasets
 
 Spatial datasets used by the BEACONs Project for conservation planning in the boreal.
 
-## Current
+## Up-to-date
 
 **Hydrology**
 
@@ -16,10 +16,15 @@ Spatial datasets used by the BEACONs Project for conservation planning in the bo
 
 - [Landcover 2010, 2015, 2020 (30m)](data/landcover.qmd)
 
+**Productivity**
+
+- [Gross Primary Productivity (GPP)](data/gpp.qmd)
+- [Normalized Difference Vegetation Index (NDVI)](data/ndvi.qmd)
+
 ## To be updated and organized
 
 - [Climate NA](https://github.com/beaconsproject/conservation_resources/blob/master/data/climateNA/cmi.md)
 - [Intactness](https://github.com/beaconsproject/conservation_resources/blob/master/data/intactness/intactness.md)
-- [Climate moisture index](https://github.com/beaconsproject/conservation_resources/blob/master/data/cmi.md)
-- [Gross primary productivity](https://github.com/beaconsproject/conservation_resources/blob/master/data/gpp.md)
+- [Climate moisture index(2015 version)](https://github.com/beaconsproject/conservation_resources/blob/master/data/cmi.md)
+- [Gross primary productivity (2015 version)](https://github.com/beaconsproject/conservation_resources/blob/master/data/gpp.md)
 

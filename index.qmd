@@ -1,6 +1,6 @@
 # BEACONs Conservation Planning Resources
 
-Updated: 2026-01-15
+Updated: 2026-01-29
 
 This site describes spatial datasets, analysis workflows, and tools (R packages, shiny apps, etc.) that the BEACONs project have found useful for conservation and landuse planning in Canada.
 

@@ -4,14 +4,14 @@
     "href": "index.html",
     "title": "BEACONs Conservation Planning Resources",
     "section": "",
-    "text": "BEACONs Conservation Planning Resources\nUpdated: 2026-01-15\nThis site describes spatial datasets, analysis workflows, and tools (R packages, shiny apps, etc.) that the BEACONs project have found useful for conservation and landuse planning in Canada.\nAll data, methods, and tools described in this website will be described in a tutorial format using a area of interest (AOI) that crosses the BC-Yukon border.\nResources are organized into three groups:\n\nData: This include all spatial datasets that we have found useful in conservation planning including hydrology, topography, environmental, and climate.\nMethods: Methods include workflows and code to achieve specific objectives that we have used as part of spatial conservation planning.\nTools: This is a collection of specialized R packages, shiny apps, and other tools (e.g., circuitscape) that we have found useful, especially when there are not simple solutions that can be coded in R (or python)&gt;"
+    "text": "BEACONs Conservation Planning Resources\nUpdated: 2026-01-29\nThis site describes spatial datasets, analysis workflows, and tools (R packages, shiny apps, etc.) that the BEACONs project have found useful for conservation and landuse planning in Canada.\nAll data, methods, and tools described in this website will be described in a tutorial format using a area of interest (AOI) that crosses the BC-Yukon border.\nResources are organized into three groups:\n\nData: This include all spatial datasets that we have found useful in conservation planning including hydrology, topography, environmental, and climate.\nMethods: Methods include workflows and code to achieve specific objectives that we have used as part of spatial conservation planning.\nTools: This is a collection of specialized R packages, shiny apps, and other tools (e.g., circuitscape) that we have found useful, especially when there are not simple solutions that can be coded in R (or python)&gt;"
   },
   {
     "objectID": "data.html",
     "href": "data.html",
-    "title": "Data",
+    "title": "Spatial datasets",
     "section": "",
-    "text": "Spatial datasets used by the BEACONs Project for conservation planning in the boreal.\n\n\nHydrology\n\nNational hydro network (NHN)\n\nTopography\n\nMedium resolution DEM (30m)\n\nLandcover\n\nLandcover 2010, 2015, 2020 (30m)\n\n\n\n\n\nClimate NA\nIntactness\nClimate moisture index\nGross primary productivity"
+    "text": "Spatial datasets used by the BEACONs Project for conservation planning in the boreal.\n\n\nHydrology\n\nNational hydro network (NHN)\n\nTopography\n\nMedium resolution DEM (30m)\n\nLandcover\n\nLandcover 2010, 2015, 2020 (30m)\n\nProductivity\n\nGross Primary Productivity (GPP)\nNormalized Difference Vegetation Index (NDVI)\n\n\n\n\n\nClimate NA\nIntactness\nClimate moisture index(2015 version)\nGross primary productivity (2015 version)"
   },
   {
     "objectID": "data.html#data",
@@ -121,8 +121,57 @@
   {
     "objectID": "data.html#to-be-updated-and-organized",
     "href": "data.html#to-be-updated-and-organized",
-    "title": "Data",
+    "title": "Spatial datasets",
     "section": "",
-    "text": "Climate NA\nIntactness\nClimate moisture index\nGross primary productivity"
+    "text": "Climate NA\nIntactness\nClimate moisture index(2015 version)\nGross primary productivity (2015 version)"
+  },
+  {
+    "objectID": "data/gpp.html",
+    "href": "data/gpp.html",
+    "title": "Gross primary connectivity",
+    "section": "",
+    "text": "View dataset description"
+  },
+  {
+    "objectID": "data/gpp.html#description",
+    "href": "data/gpp.html#description",
+    "title": "Gross primary connectivity",
+    "section": "",
+    "text": "View dataset description"
+  },
+  {
+    "objectID": "data/gpp.html#downloading-data-from-gee",
+    "href": "data/gpp.html#downloading-data-from-gee",
+    "title": "Gross primary connectivity",
+    "section": "Downloading data from GEE",
+    "text": "Downloading data from GEE\n\nOne year\nvar aoi = ee.FeatureCollection(\"projects/ee-vernier/assets/caribou_aoi\").geometry();\n//var aoi = ee.Geometry.Rectangle([-125, 48, -120, 51]); \n\n// Define the year of interest.\nvar year = 2021;\n\n// Define the start and end dates for the year.\nvar startDate = ee.Date.fromYMD(year, 1, 1);\nvar endDate = ee.Date.fromYMD(year, 12, 31);\n\n// Import the MODIS MOD17A2H GPP product.\nvar gppCollection = ee.ImageCollection('MODIS/061/MOD17A2HGF')\n  .filterDate(startDate, endDate)\n  .filterBounds(aoi) // Filter to the AOI\n  .select('Gpp'); // Select the GPP band\n\n// Function to convert GPP from kg C/m^2/8-days to kg C/m^2/year\nvar calculateAnnualGPP = function(image) {\n  return image.multiply(365.25/8).copyProperties(image, ['system:time_start']);\n};\n\n// Map the conversion function over the ImageCollection.\nvar annualGPPCollection = gppCollection.map(calculateAnnualGPP);\nprint(\"Number of images:\", annualGPPCollection.size());\n\n// Calculate the mean annual GPP.\nvar meanAnnualGPP = annualGPPCollection.mean().clip(aoi);\n//var meanAnnualGPP = gppCollection.mean().clip(aoi);\n\n// Define visualization parameters for GPP.  Adjust min/max as needed.\nvar gppVis = {\n  min: 0,\n  max: 20000,\n  palette: ['bbe029', '0a9501', '074b03'],\n};\n\n// Display the mean annual GPP.\nMap.addLayer(meanAnnualGPP, gppVis, 'Mean Annual GPP ' + year);\nMap.centerObject(aoi, 6); // Center the map on the AOI. Adjust zoom level (7).\n\n/*\nExport.image.toDrive({\n  image: meanAnnualGPP,\n  folder: 'gee_data',\n  description: 'Canada_Mean_Annual_GPP_' + year,\n  scale: 500,\n  region: aoi,\n  maxPixels: 1e13 // Important for larger areas\n});\n*/\n\n\nMulti year\n// Define area of interest.\nvar aoi = ee.FeatureCollection(\"projects/ee-vernier/assets/Canada_WGS84\").geometry();\n//var aoi = ee.Geometry.Rectangle([-125, 48, -120, 51]); \n\n// Define the years of interest.\nvar startYear = 2000;\nvar endYear = 2024;\n\n// Create a list of years for iteration.\nvar years = ee.List.sequence(startYear, endYear);\n\n// Function to calculate mean annual GPP for a single year.\nvar calculateMeanAnnualGPP = function(year) {\n  var startDate = ee.Date.fromYMD(year, 1, 1);\n  var endDate = ee.Date.fromYMD(year, 12, 31);\n\n  var gppCollection = ee.ImageCollection('MODIS/061/MOD17A2HGF')\n    .filterDate(startDate, endDate)\n    .filterBounds(aoi)\n    .select('Gpp');\n\n  // Function to convert GPP from kg C/m^2/8-days to kg C/m^2/year\n  var calculateAnnualGPP = function(image) {\n    return image.multiply(365.25 / 8).copyProperties(image, ['system:time_start']);\n  };\n\n  // Map the conversion function over the ImageCollection.\n  var annualGPPCollection = gppCollection.map(calculateAnnualGPP);\n\n  // This combines the above two code segments\n  //var annualGPPCollection = gppCollection.map(function(image) {\n  //  return image.multiply(365.25 / 8).copyProperties(image, ['system:time_start']);\n  //});\n\n  return annualGPPCollection.mean();\n};\n\n// Map the function over the list of years.\nvar annualGPPImages = years.map(calculateMeanAnnualGPP);\nprint('Number of GPP images:', annualGPPImages);\n\n// Convert the List of Images to an ImageCollection.\nvar annualGPPCollection = ee.ImageCollection(annualGPPImages);\nprint('Number of annual GPP images:', annualGPPCollection);\n\n// Calculate the overall mean GPP across all years.\nvar overallMeanGPP = annualGPPCollection.mean().clip(aoi);\nprint('Overall Mean GPP Image Info:', overallMeanGPP);\n\n// Define visualization parameters. Adjust min/max as needed.\nvar gppVis = {\n  min: 0,\n  max: 20000,  // Example max, adjust based on your data.\n  palette: ['bbe029', '0a9501', '074b03']\n};\n\n// Display the overall mean annual GPP.\nMap.addLayer(overallMeanGPP, gppVis, 'Overall Mean Annual GPP ' + startYear + '-' + endYear);\nMap.centerObject(aoi, 7); // Center the map. Adjust zoom level.\n\n// Optional: Export the image.\nExport.image.toDrive({\n  image: overallMeanGPP,\n  folder: 'gee_data',\n  description: 'Canada_Mean_Annual_GPP_' + startYear + '_' + endYear,\n  scale: 500, // Adjust scale as needed (meters).\n  region: aoi,\n  maxPixels: 1e13  // Important for larger areas!\n});"
+  },
+  {
+    "objectID": "data/ndvi.html",
+    "href": "data/ndvi.html",
+    "title": "Gross primary connectivity",
+    "section": "",
+    "text": "View dataset description"
+  },
+  {
+    "objectID": "data/ndvi.html#description",
+    "href": "data/ndvi.html#description",
+    "title": "Gross primary connectivity",
+    "section": "",
+    "text": "View dataset description"
+  },
+  {
+    "objectID": "data/ndvi.html#downloading-data-from-gee",
+    "href": "data/ndvi.html#downloading-data-from-gee",
+    "title": "Gross primary connectivity",
+    "section": "Downloading data from GEE",
+    "text": "Downloading data from GEE\n// Area of interest\nvar aoi = ee.FeatureCollection('projects/ee-vernier/assets/caribou_aoi').geometry();\n\nvar dataset = ee.ImageCollection('LANDSAT/COMPOSITES/C02/T1_L2_ANNUAL_NDVI')\n                  .filterDate('2020-01-01', '2025-12-31');\nvar ndvi = dataset.select('NDVI').mosaic().clip(aoi);\nvar ndviVis = {\n  min: 0,\n  max: 1,\n  palette: [\n    'ffffff', 'ce7e45', 'df923d', 'f1b555', 'fcd163', '99b718', '74a901',\n    '66a000', '529400', '3e8601', '207401', '056201', '004c00', '023b01',\n    '012e01', '011d01', '011301'\n  ],\n};\n\nMap.centerObject(aoi, 8);\nMap.addLayer(ndvi, ndviVis, 'NDVI');\n\nExport.image.toDrive({\n  image: ndvi,\n  folder: 'gee_data',\n  description: 'ndvi_2020-25',\n  maxPixels: 1e13,\n  crs: 'EPSG:3578',\n  scale: 100,\n  region: aoi\n});"
+  },
+  {
+    "objectID": "data.html#up-to-date",
+    "href": "data.html#up-to-date",
+    "title": "Spatial datasets",
+    "section": "",
+    "text": "Hydrology\n\nNational hydro network (NHN)\n\nTopography\n\nMedium resolution DEM (30m)\n\nLandcover\n\nLandcover 2010, 2015, 2020 (30m)\n\nProductivity\n\nGross Primary Productivity (GPP)\nNormalized Difference Vegetation Index (NDVI)"
   }
 ]
